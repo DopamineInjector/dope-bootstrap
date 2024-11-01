@@ -5,6 +5,6 @@ type NewConnectionMessage struct {
 	Port int    `json:"port"`
 }
 
-type UpdateNodesMessage struct {
-	Address string `json:"address"`
+type AvailableNodesAddresses struct {
+	Addresses []string `json:"addresses"`
 }

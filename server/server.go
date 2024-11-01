@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var knownNodeAddresses []string
+var knownNodeAddresses = make([]string, 0)
 
 const (
 	NODES_ENDPOINT = "/nodes"
@@ -20,7 +20,7 @@ func Run(addr *string, port *int) {
 
 	http.HandleFunc(NODES_ENDPOINT, nodesHandler)
 
-	log.Printf("Running bootstrap server on %s:%d", *addr, *port)
+	fmt.Printf("Running bootstrap server on %s:%d", *addr, *port)
 	http.ListenAndServe(serverAddress, nil)
 }
 

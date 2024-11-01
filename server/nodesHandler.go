@@ -25,8 +25,8 @@ func nodesHandler(w http.ResponseWriter, r *http.Request) {
 		log.Warnf("Failed to parse received message. Reason: %s", err)
 	}
 
-	newAddr := registerAddres(&mess)
-	err = updateNodes(&newAddr)
+	registerAddres(&mess)
+	err = updateNodes()
 	if err != nil {
 		log.Warnf("Error while updating nodes. Reason: %s", err)
 	} else {
@@ -41,23 +41,21 @@ func resolveMessage(mess []byte) (NewConnectionMessage, error) {
 	return resolvedMess, err
 }
 
-func registerAddres(newConn *NewConnectionMessage) string {
+func registerAddres(newConn *NewConnectionMessage) {
 	nodeAddress := fmt.Sprintf("%s:%d", (*newConn).Ip, (*newConn).Port)
 	knownNodeAddresses = append(knownNodeAddresses, nodeAddress)
 	log.Infof("Registered node IP: %s", nodeAddress)
-
-	return nodeAddress
 }
 
-func updateNodes(newAddr *string) error {
-	updateMess := UpdateNodesMessage{Address: *newAddr}
+func updateNodes() error {
+	updateMess := AvailableNodesAddresses{Addresses: knownNodeAddresses}
 	serializedMess, err := json.Marshal((updateMess))
 	if err != nil {
 		return err
 	}
 
 	for _, addr := range knownNodeAddresses {
-		log.Infof("Sending update message to %s about new node at %s", addr, *newAddr)
+		log.Infof("Sending update message to %s about available nodes", addr)
 		sendWsMessage(addr, serializedMess)
 	}
 
