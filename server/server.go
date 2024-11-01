@@ -12,16 +12,19 @@ import (
 var knownNodeAddresses = make([]string, 0)
 
 const (
-	NODES_ENDPOINT = "/nodes"
+	BOOTSTRAP_ENDPOINT = "/bootstrap"
 )
 
 func Run(addr *string, port *int) {
 	serverAddress := fmt.Sprintf("%s:%d", *addr, *port)
 
-	http.HandleFunc(NODES_ENDPOINT, nodesHandler)
+	http.HandleFunc(BOOTSTRAP_ENDPOINT, bootstrapHandler)
 
 	fmt.Printf("Running bootstrap server on %s:%d", *addr, *port)
-	http.ListenAndServe(serverAddress, nil)
+	err := http.ListenAndServe(serverAddress, nil)
+	if err != nil {
+		log.Errorf("Failed to run server on %s. Reason: %s", *addr, err)
+	}
 }
 
 func getWebsocketConnection(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {

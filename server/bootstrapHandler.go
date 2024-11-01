@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func nodesHandler(w http.ResponseWriter, r *http.Request) {
+func bootstrapHandler(w http.ResponseWriter, r *http.Request) {
 	connection, err := getWebsocketConnection(w, r)
 	if err != nil {
 		log.Warnf("Failed to establish websocket connection. Reason: %s", err)
@@ -30,7 +30,7 @@ func nodesHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Warnf("Error while updating nodes. Reason: %s", err)
 	} else {
-		log.Info("Successfully added new node")
+		log.Info("Nodes updarted successfully")
 	}
 }
 
@@ -43,8 +43,10 @@ func resolveMessage(mess []byte) (NewConnectionMessage, error) {
 
 func registerAddres(newConn *NewConnectionMessage) {
 	nodeAddress := fmt.Sprintf("%s:%d", (*newConn).Ip, (*newConn).Port)
-	knownNodeAddresses = append(knownNodeAddresses, nodeAddress)
-	log.Infof("Registered node IP: %s", nodeAddress)
+	if !checkIfAddressAlreadyKnown(nodeAddress) {
+		knownNodeAddresses = append(knownNodeAddresses, nodeAddress)
+		log.Infof("Registered node IP: %s", nodeAddress)
+	}
 }
 
 func updateNodes() error {
@@ -60,4 +62,13 @@ func updateNodes() error {
 	}
 
 	return nil
+}
+
+func checkIfAddressAlreadyKnown(addr string) bool {
+	for _, v := range knownNodeAddresses {
+		if addr == v {
+			return true
+		}
+	}
+	return false
 }
