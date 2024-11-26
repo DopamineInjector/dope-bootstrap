@@ -50,14 +50,14 @@ func registerAddres(newConn *NewConnectionMessage) {
 }
 
 func updateNodes() error {
-	updateMess := AvailableNodesAddresses{Addresses: knownNodeAddresses}
+	updateMess := AvailableNodesAddresses{Type: "addresses", Addresses: knownNodeAddresses}
 	serializedMess, err := json.Marshal((updateMess))
 	if err != nil {
 		return err
 	}
 
 	for _, addr := range knownNodeAddresses {
-		log.Infof("Sending update message to %s about available nodes", addr)
+		log.Infof("Sending update message to %s about available nodes: %s", addr, knownNodeAddresses)
 		sendWsMessage(addr, serializedMess)
 	}
 

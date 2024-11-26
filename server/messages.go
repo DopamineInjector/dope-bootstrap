@@ -6,5 +6,6 @@ type NewConnectionMessage struct {
 }
 
 type AvailableNodesAddresses struct {
+	Type      string   `json:"type"`
 	Addresses []string `json:"addresses"`
 }

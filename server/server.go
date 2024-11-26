@@ -45,12 +45,14 @@ func sendWsMessage(targetAddress string, message []byte) {
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
 		log.Warnf("Unable to establish connection to %s", targetAddress)
+		return
 	}
 	defer c.Close()
 
 	err = c.WriteMessage(websocket.TextMessage, []byte(message))
 	if err != nil {
 		log.Warnf("Unable to write message to %s", targetAddress)
+		return
 	}
 
 	log.Infof("Message sent to %s", targetAddress)
