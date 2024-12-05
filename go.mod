@@ -1,6 +1,6 @@
 module dope.bootstrap
 
-go 1.23.2
+go 1.23.1
 
 require github.com/sirupsen/logrus v1.9.3
 
